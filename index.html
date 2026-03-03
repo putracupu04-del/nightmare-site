@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+
+<!-- 🔒 LOCK ZOOM -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Music Player</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:Arial, sans-serif;
+color:white;
+touch-action:manipulation;
+}
+
+/* 🎬 Background Video */
+#bg-video{
+position:fixed;
+top:0;
+left:0;
+width:100vw;
+height:100vh;
+object-fit:cover;
+z-index:-2;
+}
+
+/* Overlay tipis */
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.25);
+z-index:-1;
+}
+
+/* Playlist Button */
+.list-btn{
+position:absolute;
+top:30px;
+right:25px;
+font-size:22px;
+cursor:pointer;
+}
+
+/* Player */
+.player{
+position:absolute;
+bottom:60px;
+width:100%;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+/* Progress */
+.progress{
+width:85%;
+margin-bottom:20px;
+}
+
+input[type=range]{
+width:100%;
+appearance:none;
+height:3px;
+background:rgba(255,255,255,0.4);
+border-radius:5px;
+}
+
+input[type=range]::-webkit-slider-thumb{
+appearance:none;
+width:12px;
+height:12px;
+background:white;
+border-radius:50%;
+}
+
+/* Controls */
+.controls{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:35px;
+}
+
+.controls button{
+background:none;
+border:none;
+color:white;
+font-size:26px;
+cursor:pointer;
+opacity:0.9;
+}
+
+.play-btn{
+background:white;
+color:black;
+width:70px;
+height:70px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+}
+
+/* Playlist */
+.playlist{
+position:fixed;
+bottom:-100%;
+left:0;
+width:100%;
+height:45%;
+background:rgba(0,0,0,0.8);
+backdrop-filter:blur(10px);
+transition:0.4s;
+overflow-y:auto;
+padding:20px;
+}
+
+.playlist.active{
+bottom:0;
+}
+
+.playlist div{
+padding:10px;
+border-bottom:1px solid rgba(255,255,255,0.1);
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<video autoplay muted loop playsinline id="bg-video">
+<source src="0a8421fb-c52b-44ab-817e-abaa0690eb03.mov" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+
+<div class="list-btn" onclick="togglePlaylist()">☰</div>
+
+<div class="player">
+
+<div class="progress">
+<input type="range" id="seek" value="0">
+</div>
+
+<div class="controls">
+<button onclick="shuffle()">🔀</button>
+<button onclick="prev()">⏮</button>
+<button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+<button onclick="next()">⏭</button>
+<button onclick="repeat()">🔁</button>
+</div>
+
+</div>
+
+<div class="playlist" id="playlist"></div>
+
+<audio id="audio"></audio>
+
+<script>
+const songs=[
+"ssstik.io_1772528554497.mp3",
+"ssstik.io_1772532413917.mp3",
+"ssstik.io_1772533528856.mp3",
+"ssstik.io_1772534144291.mp3",
+"ssstik.io_1772534217973.mp3",
+"ssstik.io_1772534458180.mp3",
+"ssstik.io_1772534591516.mp3",
+"ssstik.io_1772534005836.mp3"
+];
+
+let index=0;
+let isShuffle=false;
+let isRepeat=false;
+
+const audio=document.getElementById("audio");
+const seek=document.getElementById("seek");
+const playBtn=document.getElementById("playBtn");
+const playlist=document.getElementById("playlist");
+
+function loadSong(){
+audio.src=songs[index];
+highlightSong();
+}
+
+function togglePlay(){
+if(audio.paused){
+audio.play();
+playBtn.innerHTML="⏸";
+}else{
+audio.pause();
+playBtn.innerHTML="▶";
+}
+}
+
+function next(){
+if(isShuffle){
+index=Math.floor(Math.random()*songs.length);
+}else{
+index=(index+1)%songs.length;
+}
+loadSong();
+audio.play();
+playBtn.innerHTML="⏸";
+}
+
+function prev(){
+index=(index-1+songs.length)%songs.length;
+loadSong();
+audio.play();
+playBtn.innerHTML="⏸";
+}
+
+function shuffle(){
+isShuffle=!isShuffle;
+}
+
+function repeat(){
+isRepeat=!isRepeat;
+audio.loop=isRepeat;
+}
+
+function togglePlaylist(){
+playlist.classList.toggle("active");
+}
+
+function loadPlaylist(){
+playlist.innerHTML="";
+songs.forEach((song,i)=>{
+let item=document.createElement("div");
+item.textContent=song;
+item.onclick=()=>{
+index=i;
+loadSong();
+audio.play();
+playBtn.innerHTML="⏸";
+};
+playlist.appendChild(item);
+});
+}
+
+function highlightSong(){
+[...playlist.children].forEach((el,i)=>{
+el.style.color=i===index?"#fff":"#aaa";
+});
+}
+
+audio.addEventListener("timeupdate",()=>{
+if(audio.duration){
+seek.value=(audio.currentTime/audio.duration)*100;
+}
+});
+
+seek.addEventListener("input",()=>{
+if(audio.duration){
+audio.currentTime=(seek.value/100)*audio.duration;
+}
+});
+
+audio.addEventListener("ended",()=>{
+if(!isRepeat) next();
+});
+
+window.addEventListener("load",()=>{
+loadSong();
+loadPlaylist();
+});
+
+/* 🔒 HARD LOCK ZOOM IOS */
+document.addEventListener('gesturestart', e => e.preventDefault());
+
+let lastTouchEnd=0;
+document.addEventListener('touchend', function (event) {
+let now=(new Date()).getTime();
+if(now-lastTouchEnd<=300){
+event.preventDefault();
+}
+lastTouchEnd=now;
+}, false);
+
+document.addEventListener('touchmove', function(e){
+if(e.scale!==1){
+e.preventDefault();
+}
+},{passive:false});
+</script>
+
+</body>
+</html>
