@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nightmare Dimension</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Orbitron',sans-serif;
+cursor:none;
+}
+
+body,html{
+height:100%;
+overflow:hidden;
+color:white;
+}
+
+/* LOADING SCREEN */
+.loader{
+position:fixed;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:1000;
+font-size:2rem;
+animation:fadeOut 3s forwards 2s;
+}
+
+@keyframes fadeOut{
+to{opacity:0;visibility:hidden;}
+}
+
+/* VIDEO BACKGROUND */
+video{
+position:fixed;
+top:0;
+left:0;
+min-width:100%;
+min-height:100%;
+object-fit:cover;
+z-index:-2;
+filter:brightness(40%) contrast(120%);
+}
+
+/* PARTICLE CANVAS */
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+/* CONTENT */
+.container{
+height:100%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+animation:fadeIn 3s;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(30px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+h1{
+font-size:4rem;
+animation:glitch 1s infinite;
+}
+
+@keyframes glitch{
+0%{text-shadow:4px 4px red;}
+50%{text-shadow:-4px -4px cyan;}
+100%{text-shadow:4px 4px red;}
+}
+
+p{
+margin-top:10px;
+color:#ccc;
+}
+
+button{
+margin-top:20px;
+padding:12px 30px;
+background:linear-gradient(45deg,#ff0000,#000);
+border:none;
+color:white;
+font-size:1rem;
+cursor:pointer;
+transition:0.3s;
+border-radius:8px;
+}
+
+button:hover{
+transform:scale(1.1);
+box-shadow:0 0 20px red;
+}
+
+/* CUSTOM CURSOR */
+.cursor{
+width:20px;
+height:20px;
+border:2px solid red;
+border-radius:50%;
+position:fixed;
+pointer-events:none;
+transform:translate(-50%,-50%);
+}
+
+/* JUMPSCARE */
+.jumpscare{
+position:fixed;
+width:100%;
+height:100%;
+background:url('https://i.imgur.com/Xp8Y9sT.png') center/cover;
+display:none;
+z-index:999;
+}
+</style>
+</head>
+
+<body>
+
+<div class="loader">ENTERING NIGHTMARE...</div>
+
+<video autoplay muted loop>
+<source src="https://cdn.coverr.co/videos/coverr-dark-forest-1564/1080p.mp4" type="video/mp4">
+</video>
+
+<canvas id="particles"></canvas>
+
+<div class="container">
+<h1>NIGHTMARE DIMENSION</h1>
+<p>Welcome to the darkest anime world...</p>
+<button onclick="jumpscare()">ENTER IF YOU DARE 😈</button>
+</div>
+
+<div class="cursor" id="cursor"></div>
+<div class="jumpscare" id="scare"></div>
+
+<audio autoplay loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_8b45c7d5b5.mp3" type="audio/mp3">
+</audio>
+
+<script>
+
+/* CUSTOM CURSOR */
+const cursor = document.getElementById("cursor");
+document.addEventListener("mousemove", e=>{
+cursor.style.left=e.clientX+"px";
+cursor.style.top=e.clientY+"px";
+});
+
+/* JUMPSCARE */
+function jumpscare(){
+let scare=document.getElementById("scare");
+scare.style.display="block";
+setTimeout(()=>{scare.style.display="none";},2000);
+}
+
+/* PARTICLES */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particlesArray=[];
+
+class Particle{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=Math.random()*canvas.height;
+this.size=Math.random()*3;
+this.speedY=Math.random()*1+0.5;
+}
+update(){
+this.y+=this.speedY;
+if(this.y>canvas.height){this.y=0;}
+}
+draw(){
+ctx.fillStyle="red";
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+ctx.fill();
+}
+}
+
+for(let i=0;i<150;i++){
+particlesArray.push(new Particle());
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+particlesArray.forEach(p=>{
+p.update();
+p.draw();
+});
+requestAnimationFrame(animate);
+}
+animate();
+
+</script>
+
+</body>
+</html>
