@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kurumi Nightmare</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Orbitron', sans-serif;
+}
+
+body{
+    height:100vh;
+    background: url("IMG_0638.jpeg") center/cover no-repeat;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    color:white;
+}
+
+.overlay{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(120,0,0,0.7));
+}
+
+.container{
+    position:relative;
+    text-align:center;
+}
+
+h1{
+    font-size:50px;
+    color:#ff003c;
+    text-shadow:0 0 10px red, 0 0 20px crimson;
+    animation:glitch 1.5s infinite;
+}
+
+@keyframes glitch{
+    0%{text-shadow:3px 3px red;}
+    25%{text-shadow:-3px -3px blue;}
+    50%{text-shadow:3px -3px crimson;}
+    75%{text-shadow:-3px 3px darkred;}
+    100%{text-shadow:3px 3px red;}
+}
+
+/* CONTROL BAR DI BAWAH */
+.controls{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    padding:15px;
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    background:rgba(0,0,0,0.7);
+    backdrop-filter:blur(10px);
+}
+
+.controls button{
+    padding:10px 20px;
+    background:#ff003c;
+    border:none;
+    color:white;
+    font-size:14px;
+    border-radius:6px;
+    cursor:pointer;
+    box-shadow:0 0 10px red;
+    transition:0.3s;
+}
+
+.controls button:hover{
+    transform:scale(1.1);
+    box-shadow:0 0 20px red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay"></div>
+
+<div class="container">
+    <h1>NIGHTMARE MODE</h1>
+</div>
+
+<!-- AUDIO -->
+<audio id="bgm"></audio>
+
+<!-- CONTROL BAR -->
+<div class="controls">
+    <button onclick="prev()">PREV</button>
+    <button onclick="play()">PLAY</button>
+    <button onclick="pause()">PAUSE</button>
+    <button onclick="next()">NEXT</button>
+</div>
+
+<script>
+const songs = [
+  "lagu1.mp3",
+  "lagu2.mp3"
+];
+
+let index = 0;
+const audio = document.getElementById("bgm");
+
+function play(){
+  audio.src = songs[index];
+  audio.play();
+}
+
+function pause(){
+  audio.pause();
+}
+
+function next(){
+  index = (index + 1) % songs.length;
+  audio.src = songs[index];
+  audio.play();
+}
+
+function prev(){
+  index = (index - 1 + songs.length) % songs.length;
+  audio.src = songs[index];
+  audio.play();
+}
+
+audio.addEventListener("ended", function(){
+  next();
+});
+</script>
+
+</body>
+</html>
