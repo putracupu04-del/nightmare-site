@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nightmare Dimension</title>
+
+<style>
+body{
+    margin:0;
+    padding:0;
+    height:100vh;
+    background: black url("IMG_0638.jpeg") center/cover no-repeat;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-family:Arial, sans-serif;
+    text-align:center;
+}
+
+.overlay{
+    background:rgba(0,0,0,0.6);
+    padding:30px;
+    border-radius:15px;
+}
+
+h1{
+    font-size:35px;
+    margin-bottom:10px;
+}
+
+p{
+    opacity:0.8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+    <h1>Nightmare Dimension</h1>
+    <p>Klik dimana saja untuk memulai musik...</p>
+</div>
+
+<audio id="bgm" loop>
+  <source src="ssstik.io_1772528554497.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+document.addEventListener("click", function() {
+  document.getElementById("bgm").play();
+});
+</script>
+
+</body>
+</html>
