@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kurumi Player</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    background: url("IMG_0638.jpeg") center/cover no-repeat;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    backdrop-filter: brightness(0.6);
+    font-family: Arial, sans-serif;
+}
+
+.player{
+    width:85%;
+    max-width:400px;
+    background: rgba(0,0,0,0.7);
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+    color:white;
+}
+
+.progress{
+    width:100%;
+}
+
+.controls{
+    margin-top:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:30px;
+}
+
+button{
+    background:none;
+    border:none;
+    color:white;
+    font-size:30px;
+    cursor:pointer;
+}
+
+button:hover{
+    transform: scale(1.2);
+}
+</style>
+</head>
+
+<body>
+
+<div class="player">
+    <input type="range" value="0" class="progress" id="progress">
+    
+    <div class="controls">
+        <button onclick="playPause()" id="playBtn">▶</button>
+    </div>
+</div>
+
+<audio id="audio">
+    <source src="ssstik.io_1772528554497.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const audio = document.getElementById("audio");
+const playBtn = document.getElementById("playBtn");
+const progress = document.getElementById("progress");
+
+function playPause(){
+    if(audio.paused){
+        audio.play();
+        playBtn.innerHTML = "⏸";
+    } else {
+        audio.pause();
+        playBtn.innerHTML = "▶";
+    }
+}
+
+audio.addEventListener("timeupdate", () => {
+    progress.value = (audio.currentTime / audio.duration) * 100;
+});
+
+progress.addEventListener("input", () => {
+    audio.currentTime = (progress.value / 100) * audio.duration;
+});
+</script>
+
+</body>
+</html>
